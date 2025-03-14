@@ -1,0 +1,66 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+
+const MovieCatalog = () => {
+  const [movies, setMovies] = useState([]);
+  const [newMovie, setNewMovie] = useState({ title: "", description: "", image: "", comment: "" });
+
+  const addMovie = () => {
+    if (newMovie.title && newMovie.description && newMovie.image) {
+      setMovies([...movies, { ...newMovie, id: Date.now() }]);
+      setNewMovie({ title: "", description: "", image: "", comment: "" });
+    }
+  };
+
+  const updateComment = (id, comment) => {
+    setMovies(movies.map(movie => (movie.id === id ? { ...movie, comment } : movie)));
+  };
+
+  return (
+    <div className="p-6 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Catálogo de Películas</h1>
+      <div className="mb-4 space-y-2">
+        <Input
+          type="text"
+          placeholder="Título"
+          value={newMovie.title}
+          onChange={(e) => setNewMovie({ ...newMovie, title: e.target.value })}
+        />
+        <Input
+          type="text"
+          placeholder="URL de la Imagen"
+          value={newMovie.image}
+          onChange={(e) => setNewMovie({ ...newMovie, image: e.target.value })}
+        />
+        <Textarea
+          placeholder="Descripción"
+          value={newMovie.description}
+          onChange={(e) => setNewMovie({ ...newMovie, description: e.target.value })}
+        />
+        <Button onClick={addMovie}>Agregar Película</Button>
+      </div>
+      <div className="space-y-4">
+        {movies.map((movie) => (
+          <Card key={movie.id} className="p-4 border rounded-lg shadow-md">
+            <img src={movie.image} alt={movie.title} className="w-full h-48 object-cover rounded-md" />
+            <CardContent>
+              <h2 className="text-xl font-semibold">{movie.title}</h2>
+              <p className="text-gray-600">{movie.description}</p>
+              <Textarea
+                className="mt-2"
+                placeholder="Agrega un comentario"
+                value={movie.comment}
+                onChange={(e) => updateComment(movie.id, e.target.value)}
+              />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default MovieCatalog;
